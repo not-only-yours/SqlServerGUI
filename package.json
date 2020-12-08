@@ -1,0 +1,16 @@
+{
+  "name": "sqlservergui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.4.1",
+    "pg": "^8.5.1",
+    "pg-promise": "^10.8.0"
+  },
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "postgres",
+  "license": "ISC"
+}
