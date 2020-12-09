@@ -3,11 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="main.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-<button id = "con" onclick="customerCreate()"> click</button>
+<div style="padding-bottom: 30px">
+<h1 style="padding-bottom: 10px">Customer</h1>
+<button id = "con1" onclick="createTable('customer')" >SELECT * FROM customer</button>
+<button id = "con2" onclick="addtoTable('customer')">add element to table customer</button>
+    <input id = "customerInput" type="text">
+    <button id = "con3" onclick="selectWithFilter('customer',document.getElementById('customerInput').value)">where</button>
+</div>
+<div style="padding-bottom: 30px">
+<h1 style="padding-bottom: 10px">Account</h1>
+<button onclick="createTable('account')">SELECT * FROM account</button>
+<button onclick="addtoTable('account')">add element to table account</button>
+    <input id = "accountInput" type="text">
+    <button onclick="selectWithFilter('account',document.getElementById('accountInput').value)">where</button>
+</div>
+<div style="padding-bottom: 30px">
+<h1 style="padding-bottom: 10px">Address</h1>
+<button onclick="createTable('address')">SELECT * FROM address</button>
+<button onclick="addtoTable('address')">add element to table address</button>
+    <input id = "addressInput" type="text">
+    <button onclick="selectWithFilter('address',document.getElementById('addressInput').value)">where</button>
+</div>
+<div style="padding-bottom: 30px">
+<h1 style="padding-bottom: 10px">Bank</h1>
+<button onclick="createTable('bank')">SELECT * FROM bank</button>
+<button onclick="addtoTable('bank')">add element to table bank</button>
+    <input id = "bankInput" type="text">
+    <button onclick="selectWithFilter('bank',document.getElementById('bankInput').value)">where</button>
+</div>
+<div style="padding-bottom: 30px">
+<h1 style="padding-bottom: 10px">Employee</h1>
+<button onclick="createTable('employee')">SELECT * FROM employee</button>
+<button onclick="addtoTable('employee')">add element to table employee</button>
+    <input id = "employeeInput" type="text">
+    <button onclick="selectWithFilter('employee',document.getElementById('employeeInput').value)">where</button>
+</div>
+<div style="padding-bottom: 30px">
+<h1 style="padding-bottom: 10px">Loan</h1>
+<button onclick="createTable('loan')">SELECT * FROM loan</button>
+<button onclick="addtoTable('loan')">add element to table loan</button>
+    <input id = "loanInput" type="text">
+    <button onclick="selectWithFilter('loan',document.getElementById('loanInput').value)">where</button>
+</div>
+<div style="padding-bottom: 30px">
+<h1 style="padding-bottom: 10px">Passport</h1>
+<button onclick="createTable('passport')">SELECT * FROM passport</button>
+<button onclick="addtoTable('passport')">add element to table passport</button>
+    <input id = "passportInput" type="text">
+    <button onclick="selectWithFilter('passport',document.getElementById('passportInput').value)">where</button>
+</div>
 <div id = "ans"></div>
 </body>
+<script src="main.js"></script>
 </html>

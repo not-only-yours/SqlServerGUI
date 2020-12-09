@@ -38,7 +38,7 @@ async function execute(responce, url) {
         password: "postgres",
         host: "localhost",
         port: 5433,
-        database: "first"
+        database: "banksystem"
     })
     try{
         await client.connect()
