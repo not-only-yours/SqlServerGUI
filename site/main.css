@@ -1,0 +1,22 @@
+h1{
+    text-align: center;
+    padding-bottom: 10px;
+    background-color: #b0e0e6;
+    margin-bottom: 0;
+}
+div{
+    background-color: powderblue;
+    padding: 0 10px 0 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 2fr;
+    grid-gap: 10px;
+    height: 50px;
+}
+
+button{
+    margin: 10px 10px 10px 10px;
+}
+
+input{
+    margin: 10px 10px 10px 10px;
+}
