@@ -15,6 +15,7 @@
 // }
 //
 //
+
 const http = require('http')
 const url = require('url')
 
@@ -37,21 +38,22 @@ async function execute(responce, url) {
         user: "postgres",
         password: "postgres",
         host: "localhost",
-        port: 5433,
-        database: "banksystem"
+        port: 5432,
+        database: "kindergarden"
     })
     try{
         await client.connect()
         console.log("Connected successfully.")
         //await client.query("insert into employees values (1, 'John')")
+        console.log(url)
         const {rows} = await client.query(url)
         console.log(rows)
         responce.setHeader('Access-Control-Allow-Origin', '*');
         responce.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
         responce.end(JSON.stringify(rows))
-        //await client.end( )
+        await client.end( )
          //await client.end()
-         //console.log("Client disconnected successfully.")
+         console.log("Client disconnected successfully.")
     }
     catch (ex)
     {
