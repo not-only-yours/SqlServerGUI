@@ -23,10 +23,10 @@
 </div>
 <h1 style="padding-bottom: 10px">Request</h1>
 <div style="padding-bottom: 30px">
-<button onclick="DB.createTable('reqest')">SELECT * FROM Request</button>
-<button onclick="DB.addtoTable('reqest')">add element to table Request</button>
+<button onclick="DB.createTable('request')">SELECT * FROM Request</button>
+<button onclick="DB.addtoTable('request')">add element to table Request</button>
     <input id = "bankInput" type="text">
-    <button onclick="DB.selectWithFilter('reqest',document.getElementById('bankInput').value)">where</button>
+    <button onclick="DB.selectWithFilter('request',document.getElementById('bankInput').value)">where</button>
 </div>
 <h1 style="padding-bottom: 10px">Group</h1>
 <div style="padding-bottom: 30px">
@@ -35,7 +35,26 @@
     <input id = "employeeInput" type="text">
     <button onclick="DB.selectWithFilter('child_groups',document.getElementById('employeeInput').value)">where</button>
 </div>
+<h1 style="padding-bottom: 10px">Process Buttons</h1>
+<div style="padding-bottom: 30px">
+    <input id = "input1" type="text" placeholder="child">
+    <input id = "input2" type="text" placeholder="mother">
+    <input id = "input3" type="text" placeholder="father">
+    <input id = "input4" type="text" placeholder="groupID">
+    <button onclick="reservePlace(document.getElementById('input1').value, document.getElementById('input2').value, document.getElementById('input3').value, document.getElementById('input4').value)">Reserve place</button>
+</div>
+<div style="padding-bottom: 30px">
+    <input id = "input5" type="text" placeholder="requestID">
+    <input id = "input6" type="text" placeholder="groupID">
+    <button style="background-color: greenyellow" onclick="confirm(document.getElementById('input5').value, document.getElementById('input6').value)">Confirm</button>
+</div>
+<div style="padding-bottom: 30px">
+    <input id = "input7" type="text" placeholder="requestID">
+    <input id = "input8" type="text" placeholder="groupID">
+    <button style="background-color: red" onclick="reject(document.getElementById('input7').value, document.getElementById('input8').value)">Reject</button>
+</div>
 <div id = "ans"></div>
 </body>
 <script src = "./main.js"></script>
+<script src="functionality.js"></script>
 </html>

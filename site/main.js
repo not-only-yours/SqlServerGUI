@@ -1,7 +1,7 @@
 class DatabaseSingleton {
+    URL = "http://localhost:9000?test="
 
     constructor() {
-        this.URL = "http://localhost:9000?test="
         this.from = 0;
         this.numofElements = 0;
         this.bodyDiv = document.body.innerHTML;
@@ -24,7 +24,7 @@ class DatabaseSingleton {
 
     createTable(table) {
         this.from = 0;
-        let str = this.URL.concat("select * this.from " + table)
+        let str = this.URL.concat("select * from " + table)
         //console.log(str)
         console.log(str)
         this.createTableByUrl(str, table)
@@ -154,94 +154,7 @@ class DatabaseSingleton {
 
     }
 
-    deleteElement(table, id) {
-        console.log(id)
-        let str = this.URL.concat("delete from " + table + " where " + table + "id = " + id.substring(1));
-        console.log(str)
-        JSON.stringify(this.sendRequest('GET', str)
-            .then(() => this.createTable(table)))
 
-    }
-
-
-    editElement(table, id) {
-        console.log(table + " " + id.substring(1))
-        let str = this.URL.concat("select * from " + table);
-        console.log(str)
-        JSON.stringify(this.sendRequest('GET', str)
-            .then(data => {
-                    //console.log(data)
-                    let arr = Object.keys(data[0]);
-                    console.log(arr)
-                    document.body.innerHTML = ""
-                    let h1 = document.createElement('h1');
-                    h1.style.backgroundColor = "orange"
-                    document.body.appendChild(h1)
-                    h1.style.marginBottom = "20px"
-                    h1.innerHTML = arr[0].substring(0, arr[0].length - 2)
-                    let elem = -3;
-                    for (let obj = 1; obj < arr.length; obj++) {
-                        for (let el in data) {
-                            if (data[el][[arr[0]]] === id.substring(1)) {
-                                elem = el
-                                console.log(elem)
-                            }
-                        }
-                        if (arr[obj] === 'birthdate' || arr[obj] === 'hiredate' || arr[obj] === 'loandate')
-                            document.body.innerHTML += '<input id="' + arr[obj] + '"placeholder="' + arr[obj] + '" value="' + data[elem][arr[obj]].substring(0, 10) + '"></input>';
-                        else
-                            document.body.innerHTML += '<input id="' + arr[obj] + '"placeholder="' + arr[obj] + '" value="' + data[elem][arr[obj]] + '"></input>';
-                    }
-                    let reqest = 'INSERT INTO ' + table + '(';
-                    let values = '';
-
-                    let a = document.createElement('button');
-                    a.innerHTML = "submit"
-                    a.onclick = () => {
-                        for (let obj = 1; obj < arr.length; obj++) {
-                            if (arr[obj] === arr[arr.length - 1]) {
-                                if (arr[obj].substring(arr[obj].length - 3, arr[obj].length) === '_id') {
-                                    values += '(SELECT ' + arr[obj].substring(0, arr[obj].length - 3) + 'id from ' + arr[obj].substring(0, arr[obj].length - 3) + ' WHERE ' + arr[obj].substring(0, arr[obj].length - 3) + 'id=\'' + document.getElementById(arr[obj]).value + '\'))'
-                                } else if (parseInt(document.getElementById(arr[obj]).value) && arr[obj] !== "phone" && arr[obj].search('date') === -1 && arr[obj] !== "password" && arr[obj] !== "bin") {
-                                    values += document.getElementById(arr[obj]).value + ')'
-                                } else if (document.getElementById(arr[obj]).value === '') {
-                                    values += '\'null\')'
-                                } else {
-                                    values += '\'' + document.getElementById(arr[obj]).value + '\')'
-                                }
-                                reqest += arr[obj] + ')'
-                            } else {
-                                if (arr[obj].substring(arr[obj].length - 3, arr[obj].length) === '_id') {
-                                    values += '(SELECT ' + arr[obj].substring(0, arr[obj].length - 3) + 'id from ' + arr[obj].substring(0, arr[obj].length - 3) + ' WHERE ' + arr[obj].substring(0, arr[obj].length - 3) + 'id=\'' + document.getElementById(arr[obj]).value + '\'),'
-                                } else if (parseInt(document.getElementById(arr[obj]).value) && arr[obj] !== "phone" && arr[obj].search('date') === -1 && arr[obj] !== "password" && arr[obj] !== "bin") {
-                                    values += document.getElementById(arr[obj]).value + ','
-                                } else if (document.getElementById(arr[obj]).value === '') {
-                                    values += '\'null\','
-                                } else {
-                                    values += '\'' + document.getElementById(arr[obj]).value + '\','
-                                }
-                                reqest += arr[obj] + ','
-                            }
-                        }
-                        reqest += 'values (' + values
-                        console.log(reqest)
-                        let aa = this.URL.concat(reqest);
-                        console.log(aa)
-                        this.deleteElement(table, id)
-                        JSON.stringify(this.sendRequest('GET', aa))
-                        this.createTable(table)
-                    }
-                    document.body.appendChild(a)
-                    let but3 = document.createElement('button');
-                    but3.innerHTML = "back"
-                    but3.onclick = () => {
-                        document.body.innerHTML = this.bodyDiv
-                    }
-                    document.body.appendChild(but3)
-                }
-            ))
-
-    }
 
     createNavigateButton(link, table) {
         //console.log('yaTut')
@@ -268,7 +181,7 @@ class DatabaseSingleton {
                     this.from = this.value * 10 - 10
                     //console.log(this.from)
                     document.body.innerHTML = ""
-                    this.createTableByUrl(link, table)
+                    self.createTableByUrl(link, table)
                 }
             }
         });
@@ -303,3 +216,97 @@ class DatabaseSingleton {
 
 
 const DB = new DatabaseSingleton()
+
+
+
+
+function deleteElement(table, id) {
+    console.log(id)
+    let str = DB.URL.concat("delete from " + table + " where " + table + "id = " + id.substring(1));
+    console.log(str)
+    JSON.stringify(DB.sendRequest('GET', str)
+        .then(() => DB.createTable(table)))
+}
+
+
+function editElement(table, id) {
+    console.log(table + " " + id.substring(1))
+    let str = DB.URL.concat("select * from " + table);
+    console.log(str)
+    JSON.stringify(DB.sendRequest('GET', str)
+        .then(data => {
+                //console.log(data)
+                let arr = Object.keys(data[0]);
+                console.log(arr)
+                document.body.innerHTML = ""
+                let h1 = document.createElement('h1');
+                h1.style.backgroundColor = "orange"
+                document.body.appendChild(h1)
+                h1.style.marginBottom = "20px"
+                h1.innerHTML = arr[0].substring(0, arr[0].length - 2)
+                let elem = -3;
+                for (let obj = 1; obj < arr.length; obj++) {
+                    for (let el in data) {
+                        console.log(id.substring(1)+ " " + data[el][arr[0]])
+                        if (data[el][[arr[0]]] == id.substring(1)) {
+                            elem = el
+                            //console.log(elem)
+                            //console.log("aaaa")
+                        }
+                    }
+                    console.log(data)
+                    if (arr[obj] === 'birthdate' || arr[obj] === 'hiredate' || arr[obj] === 'loandate')
+                        document.body.innerHTML += '<input id="' + arr[obj] + '"placeholder="' + arr[obj] + '" value="' + data[elem][arr[obj]].substring(0, 10) + '"></input>';
+                    else
+                        document.body.innerHTML += '<input id="' + arr[obj] + '"placeholder="' + arr[obj] + '" value="' + data[elem][arr[obj]] + '"></input>';
+                }
+                let reqest = 'INSERT INTO ' + table + '(';
+                let values = '';
+
+                let a = document.createElement('button');
+                a.innerHTML = "submit"
+                a.onclick = () => {
+                    for (let obj = 1; obj < arr.length; obj++) {
+                        if (arr[obj] === arr[arr.length - 1]) {
+                            if (arr[obj].substring(arr[obj].length - 3, arr[obj].length) === '_id') {
+                                values += '(SELECT ' + arr[obj].substring(0, arr[obj].length - 3) + 'id from ' + arr[obj].substring(0, arr[obj].length - 3) + ' WHERE ' + arr[obj].substring(0, arr[obj].length - 3) + 'id=\'' + document.getElementById(arr[obj]).value + '\'))'
+                            } else if (parseInt(document.getElementById(arr[obj]).value) && arr[obj] !== "phone" && arr[obj].search('date') === -1 && arr[obj] !== "password" && arr[obj] !== "bin") {
+                                values += document.getElementById(arr[obj]).value + ')'
+                            } else if (document.getElementById(arr[obj]).value === '') {
+                                values += '\'null\')'
+                            } else {
+                                values += '\'' + document.getElementById(arr[obj]).value + '\')'
+                            }
+                            reqest += arr[obj] + ')'
+                        } else {
+                            if (arr[obj].substring(arr[obj].length - 3, arr[obj].length) === '_id') {
+                                values += '(SELECT ' + arr[obj].substring(0, arr[obj].length - 3) + 'id from ' + arr[obj].substring(0, arr[obj].length - 3) + ' WHERE ' + arr[obj].substring(0, arr[obj].length - 3) + 'id=\'' + document.getElementById(arr[obj]).value + '\'),'
+                            } else if (parseInt(document.getElementById(arr[obj]).value) && arr[obj] !== "phone" && arr[obj].search('date') === -1 && arr[obj] !== "password" && arr[obj] !== "bin") {
+                                values += document.getElementById(arr[obj]).value + ','
+                            } else if (document.getElementById(arr[obj]).value === '') {
+                                values += '\'null\','
+                            } else {
+                                values += '\'' + document.getElementById(arr[obj]).value + '\','
+                            }
+                            reqest += arr[obj] + ','
+                        }
+                    }
+                    reqest += 'values (' + values
+                    console.log(reqest)
+                    let aa = DB.URL.concat(reqest);
+                    console.log(aa)
+                    deleteElement(table, id)
+                    JSON.stringify(DB.sendRequest('GET', aa))
+                    DB.createTable(table)
+                }
+                document.body.appendChild(a)
+                let but3 = document.createElement('button');
+                but3.innerHTML = "back"
+                but3.onclick = () => {
+                    document.body.innerHTML = DB.bodyDiv
+                }
+                document.body.appendChild(but3)
+            }
+        ))
+
+}
