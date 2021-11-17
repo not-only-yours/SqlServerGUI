@@ -215,11 +215,6 @@ class DatabaseSingleton {
 }
 
 
-const DB = new DatabaseSingleton()
-
-
-
-
 function deleteElement(table, id) {
     console.log(id)
     let str = DB.URL.concat("delete from " + table + " where " + table + "id = " + id.substring(1));
@@ -310,3 +305,6 @@ function editElement(table, id) {
         ))
 
 }
+
+
+const DB = new DatabaseSingleton()
