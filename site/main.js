@@ -34,55 +34,60 @@ class DatabaseSingleton {
     createTableByUrl(urlInput, table) {
         JSON.stringify(this.sendRequest('GET', urlInput)
             .then(data => {
-                this.numofElements = data.length
-                console.log(data)
-                console.log(this.numofElements)
-                console.log(this.from + 10)
-                let arr = Object.keys(data[0])
-                //console.log(arr)
-                let arrOfTh = ""
-                for (let obj in arr) {
-                    arrOfTh += '        <th>' + arr[obj] + '</th>\n'
-                }
-
-                document.body.innerHTML = ""
-                let h1 = document.createElement('h1')
-                h1.style.backgroundColor = "orange"
-                document.body.appendChild(h1)
-                h1.innerHTML = arr[0].substring(0, arr[0].length - 2)
-                document.body.innerHTML += '<table class="table table-striped">\n' +
-                    '    <tr  class="bg-info">\n' +
-                    arrOfTh +
-                    '        <th>Delete</th>\n' +
-                    '        <th>Create</th>\n' +
-                    '    </tr>\n' +
-                    '\n' +
-                    '    <tbody id="myTable">\n' +
-                    '        \n' +
-                    '    </tbody>\n' +
-                    '</table>'
-
-                let tableq = document.getElementById('myTable')
-
-                for (let i = this.from; i < 10 + this.from; i++) {
-                    if (data[i]) {
-                        let row = '<tr>'
+                JSON.stringify(this.sendRequest('GET', "http://localhost:3000/search?query=")
+                    .then(newData => {
+                        if (table === 'child_groups')
+                            data = data.concat(newData)
+                        this.numofElements = data.length
+                        console.log(data)
+                        console.log(this.numofElements)
+                        console.log(this.from + 10)
+                        let arr = Object.keys(data[0])
+                        //console.log(arr)
+                        let arrOfTh = ""
                         for (let obj in arr) {
-                            if (arr[obj] === 'birthdate' || arr[obj] === 'hiredate' || arr[obj] === 'loandate') {
-                                row += '<td>' + data[i][arr[obj]].substring(0, 10) + '</td>'
-                            } else
-                                row += '<td>' + data[i][arr[obj]] + '</td>'
+                            arrOfTh += '        <th>' + arr[obj] + '</th>\n'
                         }
-                        //console.log('<td><button id = "E' + data[i][arr[0]] +'" onclick = editElement('+table+',this.id) >edit</button></td>')
-                        row += '<td><button id = "D' + data[i][arr[0]] + '" onclick = deleteElement("' + table + '",this.id) >delete</button></td>'
-                        row += '<td><button id = "E' + data[i][arr[0]] + '" onclick = editElement("' + table + '",this.id) >edit</button></td>'
-                        row += '</tr>'
-                        //console.log(row)
-                        tableq.innerHTML += row
-                    }
-                    //console.log(data)
-                }
-                this.createNavigateButton(urlInput, table)
+
+                        document.body.innerHTML = ""
+                        let h1 = document.createElement('h1')
+                        h1.style.backgroundColor = "orange"
+                        document.body.appendChild(h1)
+                        h1.innerHTML = arr[0].substring(0, arr[0].length - 2)
+                        document.body.innerHTML += '<table class="table table-striped">\n' +
+                            '    <tr  class="bg-info">\n' +
+                            arrOfTh +
+                            '        <th>Delete</th>\n' +
+                            '        <th>Create</th>\n' +
+                            '    </tr>\n' +
+                            '\n' +
+                            '    <tbody id="myTable">\n' +
+                            '        \n' +
+                            '    </tbody>\n' +
+                            '</table>'
+
+                        let tableq = document.getElementById('myTable')
+
+                        for (let i = this.from; i < 10 + this.from; i++) {
+                            if (data[i]) {
+                                let row = '<tr>'
+                                for (let obj in arr) {
+                                    if (arr[obj] === 'birthdate' || arr[obj] === 'hiredate' || arr[obj] === 'loandate') {
+                                        row += '<td>' + data[i][arr[obj]].substring(0, 10) + '</td>'
+                                    } else
+                                        row += '<td>' + data[i][arr[obj]] + '</td>'
+                                }
+                                //console.log('<td><button id = "E' + data[i][arr[0]] +'" onclick = editElement('+table+',this.id) >edit</button></td>')
+                                row += '<td><button id = "D' + data[i][arr[0]] + '" onclick = deleteElement("' + table + '",this.id) >delete</button></td>'
+                                row += '<td><button id = "E' + data[i][arr[0]] + '" onclick = editElement("' + table + '",this.id) >edit</button></td>'
+                                row += '</tr>'
+                                //console.log(row)
+                                tableq.innerHTML += row
+                            }
+                            //console.log(data)
+                        }
+                        this.createNavigateButton(urlInput, table)
+                    }))
             }))
 
     }
