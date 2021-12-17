@@ -2,7 +2,6 @@
 
 var net = require('net')
 var EventEmitter = require('events').EventEmitter
-var util = require('util')
 
 const { parse, serialize } = require('pg-protocol')
 
@@ -176,6 +175,14 @@ class Connection extends EventEmitter {
     this._ending = true
     this._send(flushBuffer)
     this._send(syncBuffer)
+  }
+
+  ref() {
+    this.stream.ref()
+  }
+
+  unref() {
+    this.stream.unref()
   }
 
   end() {
