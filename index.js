@@ -123,7 +123,7 @@ import {
     GraphQLInt,
     GraphQLSchema,
     GraphQLList,
-    GraphQLNonNull
+    GraphQLNonNull, GraphQLBoolean
 } from 'graphql';
 
 import Conn from './db.js';
@@ -135,17 +135,41 @@ const Human = new GraphQLObjectType({
         return {
             name: {
                 type: GraphQLString,
-                resolve (human) {
+                resolve(human) {
                     return human.name;
                 }
             },
             surname: {
                 type: GraphQLString,
-                resolve (human) {
+                resolve(human) {
                     return human.surname;
                 }
+            },
+            patronymic: {
+                type: GraphQLString,
+                resolve(human) {
+                    return human.patronymic;
+                }
+            },
+            age: {
+                type: GraphQLInt,
+                resolve(human) {
+                    return human.age;
+                }
+            },
+            health: {
+                type: GraphQLInt,
+                resolve(human) {
+                    return human.health;
+                }
+            },
+            address: {
+                type: GraphQLString,
+                resolve(human) {
+                    return human.address;
+                }
             }
-        };
+        }
     }
 });
 
@@ -154,20 +178,26 @@ const Client = new GraphQLObjectType({
     description: 'This represents a Person',
     fields: () => {
         return {
-            clientid: {
+            id: {
                 type: GraphQLInt,
                 resolve (client) {
                     return client.clientid;
                 }
             },
             mother: {
-                type: GraphQLString,
+                type: GraphQLInt,
                 resolve (client) {
                     return client.mother;
                 }
             },
             father: {
-                type: GraphQLString,
+                type: GraphQLInt,
+                resolve (client) {
+                    return client.father;
+                }
+            },
+            child: {
+                type: GraphQLInt,
                 resolve (client) {
                     return client.father;
                 }
@@ -175,6 +205,82 @@ const Client = new GraphQLObjectType({
         };
     }
 });
+
+const Group = new GraphQLObjectType({
+    name: 'Group',
+    description: 'Blog post',
+    fields () {
+        return {
+            name: {
+                type: GraphQLString,
+                resolve(group) {
+                    return group.name;
+                }
+            },
+            type: {
+                type: GraphQLString,
+                resolve(group) {
+                    return group.type;
+                }
+            },
+            numOfChild: {
+                type: GraphQLInt,
+                resolve(group) {
+                    return group.numOfChild;
+                }
+            },
+            canBeReserved: {
+                type: GraphQLBoolean,
+                resolve(group) {
+                    return group.canBeReserved;
+                }
+            },
+            maxNumOfChild: {
+                type: GraphQLInt,
+                resolve(group) {
+                    return group.maxNumOfChild;
+                }
+            }
+        }
+    }
+});
+
+
+const Request = new GraphQLObjectType({
+    name: 'Request',
+    description: 'Blog post',
+    fields () {
+        return {
+            client: {
+                type: GraphQLString,
+                resolve(group) {
+                    return group.client;
+                }
+            },
+            director: {
+                type: GraphQLString,
+                resolve(group) {
+                    return group.director;
+                }
+            },
+            status: {
+                type: GraphQLString,
+                resolve(group) {
+                    return group.status;
+                }
+            },
+            selectedGroup: {
+                type: GraphQLInt,
+                resolve(group) {
+                    return group.selectedGroup;
+                }
+            }
+        }
+    }
+});
+
+
+
 
 const Query = new GraphQLObjectType({
     name: 'Query',
@@ -194,6 +300,66 @@ const Query = new GraphQLObjectType({
                 resolve (root, args) {
                     return Conn.models.human.findAll({ where: args });
                 }
+            },
+            client: {
+                type: new GraphQLList(Client),
+                args: {
+                    mother: {
+                        type: GraphQLInt
+                    },
+                    father: {
+                        type: GraphQLInt
+                    },
+                    child: {
+                        type: GraphQLInt
+                    }
+                },
+                resolve (root, args) {
+                    return Conn.models.client.findAll({ where: args });
+                }
+            },
+            group: {
+                type: new GraphQLList(Group),
+                args: {
+                    name: {
+                        type: GraphQLString
+                    },
+                    type: {
+                        type: GraphQLString
+                    },
+                    numOfChild: {
+                        type: GraphQLInt
+                    },
+                    canBeReserved: {
+                        type: GraphQLBoolean
+                    },
+                    maxNumOfChild: {
+                        type: GraphQLInt
+                    },
+                },
+                resolve (root, args) {
+                    return Conn.models.group.findAll({ where: args });
+                }
+            },
+            request: {
+                type: new GraphQLList(Request),
+                args: {
+                    client: {
+                        type: GraphQLInt,
+                    },
+                    director: {
+                        type: GraphQLString,
+                    },
+                    status: {
+                        type: GraphQLInt,
+                    },
+                    selectedGropup: {
+                        type: GraphQLInt,
+                    },
+                },
+                resolve (root, args) {
+                    return Conn.models.request.findAll({ where: args });
+                }
             }
         };
     }
@@ -207,7 +373,7 @@ const Mutation = new GraphQLObjectType({
             addPerson: {
                 type: Client,
                 args: {
-                    clientid: {
+                    id: {
                         type: new GraphQLNonNull(GraphQLInt)
                     },
                     mother: {
@@ -219,7 +385,7 @@ const Mutation = new GraphQLObjectType({
                 },
                 resolve (source, args) {
                     return Conn.models.client.create({
-                        clientid: args.clientid,
+                        id: args.id,
                         mother: args.mother,
                         father: args.father
                     });
