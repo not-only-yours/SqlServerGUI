@@ -130,9 +130,15 @@ import Conn from './db.js';
 
 const Human = new GraphQLObjectType({
     name: 'Human',
-    description: 'Blog post',
+    description: 'Table with Human info',
     fields () {
         return {
+            id: {
+                type: GraphQLInt,
+                resolve(human) {
+                    return human.id;
+                }
+            },
             name: {
                 type: GraphQLString,
                 resolve(human) {
@@ -158,7 +164,7 @@ const Human = new GraphQLObjectType({
                 }
             },
             health: {
-                type: GraphQLInt,
+                type: GraphQLString,
                 resolve(human) {
                     return human.health;
                 }
@@ -175,13 +181,13 @@ const Human = new GraphQLObjectType({
 
 const Client = new GraphQLObjectType({
     name: 'Client',
-    description: 'This represents a Person',
+    description: 'This represents a Client',
     fields: () => {
         return {
             id: {
                 type: GraphQLInt,
                 resolve (client) {
-                    return client.clientid;
+                    return client.id;
                 }
             },
             mother: {
@@ -208,9 +214,15 @@ const Client = new GraphQLObjectType({
 
 const Group = new GraphQLObjectType({
     name: 'Group',
-    description: 'Blog post',
+    description: 'Groups info',
     fields () {
         return {
+            id: {
+                type: GraphQLInt,
+                resolve(group) {
+                    return group.id;
+                }
+            },
             name: {
                 type: GraphQLString,
                 resolve(group) {
@@ -248,9 +260,15 @@ const Group = new GraphQLObjectType({
 
 const Request = new GraphQLObjectType({
     name: 'Request',
-    description: 'Blog post',
+    description: 'Requests to add',
     fields () {
         return {
+            id: {
+                type: GraphQLInt,
+                resolve(group) {
+                    return group.id;
+                }
+            },
             client: {
                 type: GraphQLString,
                 resolve(group) {
@@ -290,11 +308,26 @@ const Query = new GraphQLObjectType({
             human: {
                 type: new GraphQLList(Human),
                 args: {
+                    id: {
+                        type: GraphQLInt
+                    },
                     name: {
                         type: GraphQLString
                     },
                     surname: {
                         type: GraphQLString
+                    },
+                    patronymic: {
+                        type: GraphQLString
+                    },
+                    age: {
+                        type: GraphQLInt,
+                    },
+                    health: {
+                        type: GraphQLString,
+                    },
+                    address: {
+                        type: GraphQLString,
                     }
                 },
                 resolve (root, args) {
@@ -304,6 +337,9 @@ const Query = new GraphQLObjectType({
             client: {
                 type: new GraphQLList(Client),
                 args: {
+                    id: {
+                        type: GraphQLInt
+                    },
                     mother: {
                         type: GraphQLInt
                     },
@@ -321,6 +357,9 @@ const Query = new GraphQLObjectType({
             group: {
                 type: new GraphQLList(Group),
                 args: {
+                    id: {
+                        type: GraphQLInt
+                    },
                     name: {
                         type: GraphQLString
                     },
@@ -344,6 +383,9 @@ const Query = new GraphQLObjectType({
             request: {
                 type: new GraphQLList(Request),
                 args: {
+                    id: {
+                        type: GraphQLInt
+                    },
                     client: {
                         type: GraphQLInt,
                     },
@@ -370,8 +412,170 @@ const Mutation = new GraphQLObjectType({
     description: 'Functions to set stuff',
     fields () {
         return {
-            addPerson: {
+            addClient: {
                 type: Client,
+                args: {
+                    mother: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    father: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    child: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    }
+                },
+                resolve(source, args) {
+                    return Conn.models.client.create({
+                        id: args.id,
+                        mother: args.mother,
+                        father: args.father,
+                        child: args.child
+                    });
+                }
+            },
+            addHuman: {
+                type: Human,
+                args: {
+                    name: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    surname: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    patronymic: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    age: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    health: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    address: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    }
+                },
+                resolve(source, args) {
+                    return Conn.models.human.create({
+                        name: args.name,
+                        surname: args.surname,
+                        patronymic: args.patronymic,
+                        age: args.age,
+                        health: args.health,
+                        address: args.address
+                    });
+                }
+            },
+            addGroup: {
+                type: Group,
+                args: {
+                    name: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    type: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    numOfChild: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    canBeReserved: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    maxNumOfChild: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    }
+                },
+                resolve(source, args) {
+                    return Conn.models.group.create({
+                        name: args.name,
+                        type: args.type,
+                        numOfChild: args.numOfChild,
+                        canBeReserved: args.canBeReserved,
+                        maxNumOfChild: args.maxNumOfChild
+                    });
+                }
+            },
+            addRequest: {
+                type: Request,
+                args: {
+                    client: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    director: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    status: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    selectedGroup: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    }
+                },
+                resolve(source, args) {
+                    return Conn.models.request.create({
+                        client: args.client,
+                        director: args.director,
+                        status: args.status,
+                        selectedGroup: args.selectedGroup
+                    });
+                }
+            },
+            updateHuman: {
+                type: Human,
+                args: {
+                    id: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    name: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    surname: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    patronymic: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    age: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    health: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    address: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                },
+                resolve(source, args) {
+                    return Conn.models.human.update({
+                            id: args.id,
+                            name: args.name,
+                            surname: args.surname,
+                            patronymic: args.patronymic,
+                            age: args.age,
+                            health: args.health,
+                            address: args.address
+                        },
+                        {where: {id: args.id}})
+                }
+            },
+            deleteHuman: {
+                type: Human,
+                args: {
+                    id: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    }
+                },
+                resolve(source, args) {
+                    return Conn.models.human.destroy({
+                        where: {
+                            id: args.id
+                        }
+                    })
+                }
+            },
+            updateClient: {
+                type: Human,
                 args: {
                     id: {
                         type: new GraphQLNonNull(GraphQLInt)
@@ -381,33 +585,127 @@ const Mutation = new GraphQLObjectType({
                     },
                     father: {
                         type: new GraphQLNonNull(GraphQLString)
+                    },
+                    child: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    }
+                },
+                resolve(source, args) {
+                    return Conn.models.client.update({
+                            mother: args.mother,
+                            father: args.father,
+                            child: args.name
+                        },
+                        {where: {id: args.id}})
+                },
+            },
+            deleteClient: {
+                type: Client,
+                args: {
+                    id: {
+                        type: new GraphQLNonNull( GraphQLInt)
                     }
                 },
                 resolve (source, args) {
-                    return Conn.models.client.create({
-                        id: args.id,
-                        mother: args.mother,
-                        father: args.father
-                    });
+                    return Conn.models.client.destroy({
+                        where: {
+                            id: args.id
+                        }
+                    })
                 }
             },
-            addPost: {
-                type: Human,
+            updateGroup: {
+                type: Group,
                 args: {
+                    id: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
                     name: {
                         type: new GraphQLNonNull(GraphQLString)
                     },
-                    surname: {
+                    type: {
                         type: new GraphQLNonNull(GraphQLString)
+                    },
+                    numOfChild: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    canBeReserved: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    maxNumOfChild: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    }
+                },
+                resolve(source, args) {
+                    return Conn.models.group.update({
+                            name: args.name,
+                            type: args.type,
+                            numOfChild: args.numOfChild,
+                            canBeReserved: args.canBeReserved,
+                            maxNumOfChild: args.maxNumOfChild
+                        },
+                        {where: {id: args.id}})
+                },
+            },
+            deleteGroup: {
+                type: Group,
+                args: {
+                    id: {
+                        type: new GraphQLNonNull( GraphQLInt)
                     }
                 },
                 resolve (source, args) {
-                    return Conn.models.human.create({
-                        name: args.name,
-                        surname: args.surname
-                    });
+                    return Conn.models.group.destroy({
+                        where: {
+                            id: args.id
+                        }
+                    })
                 }
-            }
+            },
+            updateRequest: {
+                type: Request,
+                args: {
+                    id: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    client: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    director: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    status: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    selectedGroup: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    }
+                },
+                resolve(source, args) {
+                    return Conn.models.request.update({
+                            client: args.client,
+                            director: args.director,
+                            status: args.status,
+                            selectedGroup: args.selectedGroup
+                        },
+                        {where: {id: args.id}})
+                },
+            },
+            deleteRequest: {
+                type: Request,
+                args: {
+                    id: {
+                        type: new GraphQLNonNull( GraphQLInt)
+                    }
+                },
+                resolve (source, args) {
+                    return Conn.models.request.destroy({
+                        where: {
+                            id: args.id
+                        }
+                    })
+                }
+            },
         }
     }
 });
@@ -417,7 +715,7 @@ const Schema = new GraphQLSchema({
     mutation: Mutation
 });
 
-import Express from 'express';
+import Express, {request} from 'express';
 import GraphHTTP from 'express-graphql';
 
 
