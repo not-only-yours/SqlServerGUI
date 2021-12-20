@@ -23,6 +23,7 @@
     "faker": "^5.5.3",
     "graphql": "^16.1.0",
     "graphql-tag": "^2.12.6",
+    "node-fetch-retry": "^2.0.0",
     "sequelize": "^6.12.0-beta.3"
   }
 }

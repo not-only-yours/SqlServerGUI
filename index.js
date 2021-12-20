@@ -84,9 +84,11 @@ http.createServer((request,response) =>{
 
 
 //executePostgre()
+import pkg from 'pg';
+
 
 async function executePostgre(responce, url) {
-    const {Client} = require('pg')
+    const { Client } = pkg;
     const client = new Client({
         user: "postgres",
         password: "postgres",

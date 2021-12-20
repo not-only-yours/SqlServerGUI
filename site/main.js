@@ -1,3 +1,4 @@
+
 class DatabaseSingleton {
     URL = "http://localhost:9000?test="
 
@@ -8,7 +9,7 @@ class DatabaseSingleton {
     }
 
     sendRequest(method, url, body = null) {
-        return fetch(url).then(response => {
+        return fetch(url, { method: method, retry: 3, pause: 1000 }).then(response => {
             if (response.ok) {
                 return response.json();
             }
