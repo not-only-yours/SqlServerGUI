@@ -15,6 +15,9 @@
 // }
 //
 //
+
+import Conn from './db.js';
+
 class Data {
     static db = [
         {
@@ -85,11 +88,16 @@ http.createServer((request,response) =>{
 
 //executePostgre()
 import pkg from 'pg';
+import cacher from 'sequelize-redis-cache'
+import { createClient } from 'redis'
+import Sequelize from 'sequelize';
+// Let's promisify Redis
+
 
 
 async function executePostgre(responce, url) {
-    const { Client } = pkg;
-    const client = new Client({
+
+    const client = new pkg.Client({
         user: "postgres",
         password: "postgres",
         host: "localhost",
@@ -97,6 +105,22 @@ async function executePostgre(responce, url) {
         database: "kindergarden"
     })
     try{
+        //console.log(url.includes('where'))
+        if(!url.includes('where')) {
+
+            let rc = createClient()
+
+            let getModel = url.split('from ').pop().slice(0, -1).split('where')[0];
+
+
+            console.log(getModel)
+
+            
+            let cacheObj = cacher(Conn, rc)
+                .model(getModel)
+                .ttl(5);
+            console.log(cacheObj)
+        }
         await client.connect()
         console.log("Connected successfully.")
         //await client.query("insert into employees values (1, 'John')")
@@ -108,8 +132,8 @@ async function executePostgre(responce, url) {
 
         responce.end(JSON.stringify(rows))
         await client.end()
-         //await client.end()
-         console.log("Client disconnected successfully.")
+        //await client.end()
+        console.log("Client disconnected successfully.")
     }
     catch (ex)
     {
@@ -128,7 +152,7 @@ import {
     GraphQLNonNull, GraphQLBoolean
 } from 'graphql';
 
-import Conn from './db.js';
+
 
 const Human = new GraphQLObjectType({
     name: 'Human',
@@ -717,7 +741,7 @@ const Schema = new GraphQLSchema({
     mutation: Mutation
 });
 
-import Express, {request} from 'express';
+import Express from 'express';
 import GraphHTTP from 'express-graphql';
 
 

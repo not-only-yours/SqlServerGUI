@@ -9,31 +9,31 @@
 <body style="background-color: powderblue">
 <h1 style="padding-bottom: 10px">Client</h1>
 <div style="padding-bottom: 30px">
-<button onclick="DB.createTable('client')">SELECT * FROM Client</button>
-<button onclick="DB.addtoTable('client')">add element to table Client</button>
+<button onclick="DB.createTable('clients')">SELECT * FROM Client</button>
+<button onclick="DB.addtoTable('clients')">add element to table Client</button>
     <input id = "accountInput" type="text">
-    <button onclick="DB.selectWithFilter('client',document.getElementById('accountInput').value)">where</button>
+    <button onclick="DB.selectWithFilter('clients',document.getElementById('accountInput').value)">where</button>
 </div>
 <h1 style="padding-bottom: 10px">Human</h1>
 <div style="padding-bottom: 30px">
-<button onclick="DB.createTable('human')">SELECT * FROM Human</button>
-<button onclick="DB.addtoTable('human')">add element to table Human</button>
+<button onclick="DB.createTable('humans')">SELECT * FROM Human</button>
+<button onclick="DB.addtoTable('humans')">add element to table Human</button>
     <input id = "addressInput" type="text">
-    <button onclick="DB.selectWithFilter('human',document.getElementById('addressInput').value)">where</button>
+    <button onclick="DB.selectWithFilter('humans',document.getElementById('addressInput').value)">where</button>
 </div>
 <h1 style="padding-bottom: 10px">Request</h1>
 <div style="padding-bottom: 30px">
-<button onclick="DB.createTable('request')">SELECT * FROM Request</button>
-<button onclick="DB.addtoTable('request')">add element to table Request</button>
+<button onclick="DB.createTable('requests')">SELECT * FROM Request</button>
+<button onclick="DB.addtoTable('requests')">add element to table Request</button>
     <input id = "bankInput" type="text">
-    <button onclick="DB.selectWithFilter('request',document.getElementById('bankInput').value)">where</button>
+    <button onclick="DB.selectWithFilter('requests',document.getElementById('bankInput').value)">where</button>
 </div>
 <h1 style="padding-bottom: 10px">Group</h1>
 <div style="padding-bottom: 30px">
-<button onclick="DB.createTable('child_groups')">SELECT * FROM Group</button>
-<button onclick="DB.addtoTable('child_groups')">add element to table Group</button>
+<button onclick="DB.createTable('groups')">SELECT * FROM Group</button>
+<button onclick="DB.addtoTable('groups')">add element to table Group</button>
     <input id = "employeeInput" type="text">
-    <button onclick="DB.selectWithFilter('child_groups',document.getElementById('employeeInput').value)">where</button>
+    <button onclick="DB.selectWithFilter('groups',document.getElementById('employeeInput').value)">where</button>
 </div>
 <h1 style="padding-bottom: 10px">Process Buttons</h1>
 <div style="padding-bottom: 30px">

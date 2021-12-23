@@ -8,7 +8,8 @@ const Conn = new Sequelize(
     'postgres',
     {
         dialect: 'postgres',
-        host: 'localhost'
+        host: 'localhost',
+        logging: false
     }
 );
 
@@ -124,50 +125,63 @@ const Request = Conn.define('request', {
 });
 
 // Relations
-Client.hasMany(Human);
-Request.hasMany(Group);
-Client.belongsTo(Request);
-
-Conn.sync({ force: true }).then(()=> {
-    _.times(10, ()=> {
-        return Human.create({
-            name: Faker.name.firstName(),
-            surname: Faker.name.lastName(),
-            patronymic: Faker.name.firstName(),
-            age: Faker.random.number(5),
-            health: Faker.random.number(100),
-            address: Faker.address.city()
-        });
-    });
-})
-    .then(() => {
-        _.times(10, ()=> {
-        return Client.create({
-            mother: Faker.random.number(100000),
-            father: Faker.random.number(100000),
-            child: Faker.random.number(100000),
-            })
-        });
-    })
-.then(() => {
-    _.times(10, ()=> {
-        return Group.create({
-            name: Faker.name.firstName(),
-            type: Faker.name.firstName(),
-            numOfChild:  Faker.random.number(20),
-            canBeReserved:  Faker.random.boolean(),
-            maxNumOfChild: Faker.random.number(30),
-        })
-    });
-})
-    .then(() => {
-        _.times(10, ()=> {
-            return Request.create({
-                client: Faker.random.number(100000),
-                director: Faker.name.firstName(),
-                status: Faker.name.firstName(),
-                selectedGroup: Faker.random.number(100000)
-            })
-        });
-    })
+// Client.hasMany(Human);
+// Request.hasMany(Group);
+// Client.belongsTo(Request);
+//
+// Conn.sync({ force: true }).then(()=> {
+//     console.log("start")
+//     _.times(10000, ()=> {
+//         return Human.create({
+//             name: Faker.name.firstName(),
+//             surname: Faker.name.lastName(),
+//             patronymic: Faker.name.firstName(),
+//             age: Faker.datatype.number(5),
+//             health: Faker.datatype.number(100),
+//             address: Faker.address.city()
+//         });
+//     });
+// })
+//     .then(() => {
+//         console.log("Human created!")
+//     })
+//     .then(() => {
+//         _.times(10000, ()=> {
+//         return Client.create({
+//             mother: Faker.datatype.number(100000),
+//             father: Faker.datatype.number(100000),
+//             child: Faker.datatype.number(100000),
+//             })
+//         });
+//     })
+//     .then(() => {
+//         console.log("Client created!")
+//     })
+// .then(() => {
+//     _.times(10000, ()=> {
+//         return Group.create({
+//             name: Faker.name.firstName(),
+//             type: Faker.name.firstName(),
+//             numOfChild:  Faker.datatype.number(20),
+//             canBeReserved:  Faker.datatype.boolean(),
+//             maxNumOfChild: Faker.datatype.number(30),
+//         })
+//     });
+// })
+//     .then(() => {
+//         console.log("Group created!")
+//     })
+//     .then(() => {
+//         _.times(10000, ()=> {
+//             return Request.create({
+//                 client: Faker.datatype.number(100000),
+//                 director: Faker.name.firstName(),
+//                 status: Faker.name.firstName(),
+//                 selectedGroup: Faker.datatype.number(100000)
+//             })
+//         });
+//     })
+//     .then(() => {
+//         console.log("Request created!")
+//     })
 export default Conn;
