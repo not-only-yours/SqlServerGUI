@@ -2,7 +2,7 @@ import Sequelize from 'sequelize';
 import Faker from 'faker';
 import _ from 'lodash';
 
-const Conn = new Sequelize(
+let Conn = new Sequelize(
     'kindergarden',
     'postgres',
     'postgres',
@@ -12,6 +12,32 @@ const Conn = new Sequelize(
         logging: false
     }
 );
+
+const firstChangeConn = () => {
+    Conn = new Sequelize(
+        'kindergarden_helpOne',
+        'postgres',
+        'postgres',
+        {
+            dialect: 'postgres',
+            host: 'localhost',
+            logging: false
+        }
+    )
+}
+
+const secondChangeConn = () => {
+    Conn = new Sequelize(
+        'kindergarden_helpTwo',
+        'postgres',
+        'postgres',
+        {
+            dialect: 'postgres',
+            host: 'localhost',
+            logging: false
+        }
+    )
+}
 
 const Human = Conn.define('human', {
     id: {
@@ -124,10 +150,12 @@ const Request = Conn.define('request', {
     }
 });
 
-// Relations
+// firstChangeConn()
+//
 // Client.hasMany(Human);
 // Request.hasMany(Group);
 // Client.belongsTo(Request);
+
 //
 // Conn.sync({ force: true }).then(()=> {
 //     console.log("start")

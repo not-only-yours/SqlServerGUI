@@ -69,14 +69,14 @@ http.createServer((request,response) =>{
     response.setHeader('Content-Type', 'application/json');
     let urlReqest = url.parse(request.url, true)
     //console.log(executePostgre(r))
-    console.log("Connected successfully.")
+    //console.log("Connected successfully.")
     //await client.query("insert into employees values (1, 'John')")
-    console.log(JSON.stringify(Data.db))
+    //console.log(JSON.stringify(Data.db))
     if (urlReqest.path === '/search?query=') {
         response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
         response.end(JSON.stringify(Data.db))
-        console.log("Client disconnected successfully.")
+        //console.log("Client disconnected successfully.")
     } else if (urlReqest.path.includes('/details/')) {
         let count = urlReqest.path.replace('/details/', '')
         response.setHeader('Access-Control-Allow-Origin', '*');
@@ -93,10 +93,9 @@ import { createClient } from 'redis'
 import Sequelize from 'sequelize';
 // Let's promisify Redis
 
-
+let cache = {}
 
 async function executePostgre(responce, url) {
-
     const client = new pkg.Client({
         user: "postgres",
         password: "postgres",
@@ -104,36 +103,72 @@ async function executePostgre(responce, url) {
         port: 5432,
         database: "kindergarden"
     })
+    const clientTwo = new pkg.Client({
+        user: "postgres",
+        password: "postgres",
+        host: "localhost",
+        port: 5432,
+        database: "kindergarden_helpone"
+    })
+    const clientThree = new pkg.Client({
+        user: "postgres",
+        password: "postgres",
+        host: "localhost",
+        port: 5432,
+        database: "kindergarden_helptwo"
+    })
     try{
         //console.log(url.includes('where'))
-        if(!url.includes('where')) {
-
-            let rc = createClient()
-
-            let getModel = url.split('from ').pop().slice(0, -1).split('where')[0];
-
-
-            console.log(getModel)
-
-            
-            let cacheObj = cacher(Conn, rc)
-                .model(getModel)
-                .ttl(5);
-            console.log(cacheObj)
-        }
-        await client.connect()
-        console.log("Connected successfully.")
-        //await client.query("insert into employees values (1, 'John')")
+        let getModel = url.split('from ').pop().slice(0, -1).split('where')[0];
         console.log(url)
-        const {rows} = await client.query(url)
-        console.log(rows)
-        responce.setHeader('Access-Control-Allow-Origin', '*');
-        responce.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+        console.log(cache[getModel])
+        if(cache[getModel]) {
+            console.log("Connected to cache")
+            //console.log("cache part")
+            //console.log(cache.url)
+            responce.setHeader('Access-Control-Allow-Origin', '*');
+            responce.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
 
-        responce.end(JSON.stringify(rows))
-        await client.end()
-        //await client.end()
-        console.log("Client disconnected successfully.")
+            responce.end(JSON.stringify(cache[getModel]))
+            //await client.end()
+            console.log("Client disconnected successfully.")
+        } else {
+            //console.log("else part")
+            //await client.query("insert into employees values (1, 'John')")
+            console.log(url)
+            await client.connect()
+            console.log("Connected successfully to first database.")
+            let {rows} = await client.query(url)
+            await client.end()
+            //console.log(rows)
+            await clientTwo.connect()
+            console.log("Connected successfully to second database.")
+            let {rowsTwo} = await clientTwo.query(url)
+            await clientTwo.end()
+            //console.log(rows)
+            await clientThree.connect()
+            console.log("Connected successfully to third database.")
+            let {rowsThree} = await clientThree.query(url)
+            await clientThree.end()
+            // console.log(rows)
+            //console.log(rowsTwo)
+            //console.log(rowsThree)
+            //rows += await clientThree.query(url)
+            //console.log(db)
+            rows = rows.concat(rows, rows)
+            console.log(rows)
+            cache[getModel] = rows
+            //console.log(rows)
+            responce.setHeader('Access-Control-Allow-Origin', '*');
+            responce.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+            responce.setTimeout(20000, () => {
+                responce.end(JSON.stringify(rows))
+                console.log("Client disconnected successfully.")
+        })
+
+            //await client.end()
+            //console.log("Client disconnected successfully.")
+        }
     }
     catch (ex)
     {
